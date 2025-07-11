@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "ConquerX Messages",
+  "version": "1.0",
+  "description": "Auto-inject message templates for ConquerX",
+  "author": "Pau Serrat Gutiérrez",
+  "homepage_url": "https://github.com/pauserratgutierrez/conquerx-messages",
+  "content_scripts": [
+    {
+      "matches": ["*://crm.conquerx.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": ["activeTab"]
+}
