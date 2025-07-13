@@ -34,7 +34,7 @@
       'conquerlanguages.com': [
         ['Daniel', '+34 604 56 12 18', 'daniel.rodriguez'],
         ['Hugo', '+34 604 56 04 51', 'hugo.bernabeu'],
-        ['Hugo Meseguer', '+34 604 56 04 42', 'hugo.meseguer'],
+        ['Hugo', '+34 604 56 04 42', 'hugo.meseguer'],
         ['Lucia', '+34 604 56 04 43', 'lucia.serrano'],
         ['Mario', '+34 604 56 06 32', 'mario.garcia']
       ]
