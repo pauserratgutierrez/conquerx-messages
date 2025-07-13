@@ -23,14 +23,14 @@
         ['Chema', '+34 604 56 04 40', 'chema.celada'],
         ['Corina', '+34 604 56 10 08', 'corina.pineiro'],
         ['Llibert', '+34 604 56 04 35', 'llibert.gutierrez'],
-        ['Raúl', '+34 604 56 03 01', 'raul.barrios']
+        ['Raúl', '+34 604 56 03 01', 'raul.barrios'],
+        ['Hugo', '+34 604 56 04 42', 'hugo.meseguer'] // Languages, con correo de finance
       ],
       'formacioneninversion.com': [
         ['Chema', '+34 604 56 04 40', 'chema.celada'],
         ['Corina', '+34 604 56 10 08', 'corina.pineiro'],
         ['Llibert', '+34 604 56 04 35', 'llibert.gutierrez'],
-        ['Raúl', '+34 604 56 03 01', 'raul.barrios'],
-        ['Hugo', '+34 604 56 04 42', 'hugo.meseguer'] // Languages, con este correo
+        ['Raúl', '+34 604 56 03 01', 'raul.barrios']
       ],
       'conquerlanguages.com': [
         ['Daniel', '+34 604 56 12 18', 'daniel.rodriguez'],
