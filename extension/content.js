@@ -122,7 +122,7 @@
     },
     'N2': () => {
       const { lead, fecha } = getData();
-      return `Hola ${lead},\n\nTe he llamado varias veces y no logro contactar contigo. Te llamaba simplemente para comentarte cómo va a ser la llamada de *${fecha}*.\n\nAvísame cuando estés disponible y te vuelvo a llamar.`;
+      return `Hola ${lead},\n\nTe he llamado varias veces y no logro contactar contigo. Te llamaba simplemente para comentarte cómo va a ser la llamada de *${fecha}*. Avísame cuando estés disponible y te vuelvo a llamar.`;
     },
     'N3': () => `${getData().lead}, he vuelto a intentar contactarte en varias ocasiones para confirmar tu llamada, pero veo que no hemos podido coincidir, ¿Podrías decirme cuándo podríamos cuadrar para confirmar la llamada?`,
     'N4': () => `${getData().lead}, si finalmente ya no quieres tener la llamada, con un "eres muy simpático ${SETTER.name}, pero ya no me interesa" también me haces feliz 😊`,
