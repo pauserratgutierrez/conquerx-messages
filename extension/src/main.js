@@ -1,10 +1,51 @@
-(() => {
-  // Early return if not on the correct page
-  if (!/\/schedules\/set\/update\/\d+\/?$/.test(location.pathname)) return;
+(async () => {
+  if (!location.pathname.startsWith('/es/schedules/set/update/')) return;
+
+  const res = await fetch(chrome.runtime.getURL('src/widget.html'));
+  const html = await res.text();
+  document.body.insertAdjacentHTML('beforeend', html);
+
+  const content = document.querySelector('.toolbox-content');
+  const modes = document.querySelectorAll('.toolbox-mode');
+
+  const showMode = (mode) => {
+    modes.forEach(m => {
+      m.style.display = m.dataset.mode === mode ? 'flex' : 'none';
+    });
+  };
+
+  // Always show menu by default
+  showMode('menu');
+
+  // Toggle visibility
+  document.querySelector('.toolbox-bubble')?.addEventListener('click', () => {
+    content.classList.toggle('hidden');
+    // if (!content.classList.contains('hidden')) showMode('menu');
+  });
+
+  // Tool button handler (menu -> tool)
+  document.querySelector('.toolbox-tool-list')?.addEventListener('click', (e) => {
+    const tool = e.target.closest('.toolbox-tool')?.dataset.tool;
+    if (tool) showMode(tool);
+  });
+
+  // Back button handler (tool -> menu)
+  document.querySelector('.toolbox-content')?.addEventListener('click', (e) => {
+    if (e.target.closest('.toolbox-back-button')) showMode('menu');
+  });
+
+  document.querySelector('.toolbox-content')?.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.toolbox-button');
+    const template = btn?.dataset.template;
+    if (template && mensajes?.[template]) {
+      await navigator.clipboard.writeText(mensajes[template]());
+      content.classList.add('hidden'); // Optionally hide toolbox after copying
+    }
+  });
 
   // Constants
   const DOMINIOS = { blocks: 'ConquerBlocks.com', finance: 'ConquerFinance.com', languages: 'ConquerLanguages.com' };
-  
+
   const CLOSERS = Object.fromEntries(
     Object.entries({
       'conquerblocks.com': [
@@ -97,121 +138,57 @@
 
   // Cached data
   const getData = memoize(() => {
-    const lead = getDataValue('Nombre');
-    const correo = getDataValue('Closer').toLowerCase();
+    const nombre = getDataValue('Nombre');
+    const correoLead = getDataValue('Correo electrónico');
+    const telefonoLead = getDataValue('Teléfono');
+    const lead = getDataValue('Nombre').charAt(0).toUpperCase() + getDataValue('Nombre').slice(1);
+    const correoCloser = getDataValue('Closer').toLowerCase();
     const fechaTexto = getDataValue('Fecha de llamada');
     const evento = getDataValue('Evento');
-    
-    const closer = CLOSERS[correo];
+
+    const closer = CLOSERS[correoCloser];
     const fecha = formatDate(fechaTexto);
     const dominio = Object.entries(DOMINIOS).find(([key]) => 
       new RegExp(key, 'i').test(evento)
     )?.[1] ?? 'conquerx.com';
     const dominioKey = Object.keys(DOMINIOS).find(key => DOMINIOS[key] === dominio) ?? 'blocks';
 
-    return { lead, closer, fecha, dominio, dominioKey };
+    return { nombre, correoLead, telefonoLead, lead, closer, fecha, fechaTexto, dominio, dominioKey };
   });
 
   // Message templates
   const mensajes = {
-    'N1': () => {
+    'ncl1': () => {
       const { lead, dominio } = getData();
       return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para confirmar tu cita antes de la sesión. Si no puedo confirmarla por teléfono, tendré que cancelarla.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
     },
-    'N1 (Latam)': () => {
+    'ncl1_latam': () => {
       const { lead, dominio } = getData();
       return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero me aparece un número de Latinoamérica 😊\n\nEs esencial que podamos saber si te encuentras viviendo en Europa o en algún país de Latinoamérica para que podamos asignarte al departamento correspondiente.\n\nQuedo atento a tu respuesta. ¡Muchas gracias!`;
     },
-    'N2': () => {
+    'ncl2': () => {
       const { lead, fecha } = getData();
       return `Hola ${lead},\n\nTe he llamado varias veces y no logro contactar contigo. Te llamaba simplemente para comentarte cómo va a ser la llamada del *${fecha}*. Avísame cuando estés disponible y te vuelvo a llamar.`;
     },
-    'N3': () => `${getData().lead}, he vuelto a intentar contactarte en varias ocasiones para confirmar tu llamada, pero veo que no hemos podido coincidir, ¿Podrías decirme cuándo podríamos cuadrar para confirmar la llamada?`,
-    'N4': () => `${getData().lead}, si finalmente ya no quieres tener la llamada, con un "eres muy simpático ${SETTER.name}, pero ya no me interesa" también me haces feliz 😊`,
-    'N5': () => `${getData().lead}, entiendo que puedas estar ocupado. Es importante confirmar tu sesión ya que hay otras personas interesadas. ¿Me confirmas que podrás asistir?`,
-    'N1 Pre': () => {
+    'ncl3': () => `${getData().lead}, he vuelto a intentar contactarte en varias ocasiones para confirmar tu llamada, pero veo que no hemos podido coincidir, ¿Podrías decirme cuándo podríamos cuadrar para confirmar la llamada?`,
+    'ncl4': () => `${getData().lead}, si finalmente ya no quieres tener la llamada, con un "eres muy simpático ${SETTER.name}, pero ya no me interesa" también me haces feliz 😊`,
+    'ncl5': () => `${getData().lead}, entiendo que puedas estar ocupado. Es importante confirmar tu sesión ya que hay otras personas interesadas. ¿Me confirmas que podrás asistir?`,
+    'ncp1': () => {
       const { lead, dominio } = getData();
       return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para agendar la cita que quedó pendiente con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para poder agendar tu sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente.👌`;
     },
-    'N2 Pre': () => `Hola ${getData().lead} 😊\n\nTe he llamado de nuevo porque iniciaste el proceso para agendar una llamada con nosotros, pero faltó el último paso para elegir la hora.\n\nTe llamaba simplemente para ayudarte a cuadrar tu cita. Avísame cuando estés disponible y te vuelvo a llamar.👌`,
-    '✅ Confirmar': () => {
+    'ncp2': () => `Hola ${getData().lead} 😊\n\nTe he llamado de nuevo porque iniciaste el proceso para agendar una llamada con nosotros, pero faltó el último paso para elegir la hora.\n\nTe llamaba simplemente para ayudarte a cuadrar tu cita. Avísame cuando estés disponible y te vuelvo a llamar.👌`,
+    'confirm_lead': () => {
       const { lead, dominio, closer, fecha } = getData();
       return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para el *${fecha}*.`;
     },
-    '❌ Cancelar (Latam)': () => {
+    'confirm_closer': () => {
+      const { fechaTexto, nombre, correoLead, telefonoLead } = getData();
+      return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nNombre\n${nombre}\nCorreo electrónico\n${correoLead}\nTeléfono\n${telefonoLead}`;
+    },
+    'cancel_latam': () => {
       const { lead, dominio, dominioKey } = getData();
       return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio} 😊\n\nTe dejo el enlace para poder agendar tu cita con el equipo de Latam. Te será más sencillo cuadrar horarios 💪\n\n${LATAM_LINKS[dominioKey]}`;
     }
   };
-
-  // UI Creation
-  const createUI = () => {
-    // CSS injection (only once)
-    if (!document.getElementById('message-bubble-styles')) {
-      const style = document.createElement('style');
-      style.id = 'message-bubble-styles';
-      style.textContent = `
-        .bubble-container{position:fixed;bottom:20px;right:20px;z-index:9999}
-        .main-bubble{width:40px;height:40px;border-radius:50%;border:1px solid #d8d8d8ff;color:white;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.2);cursor:pointer;transition:all .2s ease}
-        .main-bubble:hover{transform:scale(1.1)}
-        .main-bubble.active{border: 1px solid #d8d8d8ff}
-        .buttons-container{position:absolute;bottom:48px;right:0;display:flex;flex-direction:column;gap:6px;opacity:0;visibility:hidden;transition:all .2s ease}
-        .buttons-container.show{opacity:1;visibility:visible}
-        .action-button{background:white;border:1px solid #ddd;padding:6px 10px;border-radius:10px;cursor:pointer;font-size:12px;white-space:nowrap;color:#333;box-shadow:0 1px 3px rgba(0,0,0,0.1);transition:.2s}
-        .action-button:hover{background:#d8d8d8ff;transform:translateX(-3px)}
-        .no-contesta{border:1px solid #ffc700}
-        .confirmar{border:1px solid #50cd89}
-        .cancelar{border:1px solid #f1416c}
-      `;
-      document.head.appendChild(style);
-    }
-
-    const container = document.createElement('div');
-    container.className = 'bubble-container';
-
-    const btnContainer = document.createElement('div');
-    btnContainer.className = 'buttons-container';
-
-    // Create buttons efficiently
-    const fragment = document.createDocumentFragment();
-    Object.keys(mensajes).forEach(label => {
-      const btn = document.createElement('button');
-      btn.className = `action-button ${
-        label.startsWith('N') ? 'no-contesta' : 
-        label === '✅ Confirmar' ? 'confirmar' : 
-        label === '❌ Cancelar (Latam)' ? 'cancelar' : ''
-      }`.trim();
-      btn.textContent = label;
-      btn.onclick = async () => {
-        await navigator.clipboard.writeText(mensajes[label]());
-        toggle(false);
-      };
-      fragment.appendChild(btn);
-    });
-    btnContainer.appendChild(fragment);
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.className = 'main-bubble';
-    toggleBtn.textContent = '💬';
-
-    let isOpen = false;
-    const toggle = (force) => {
-      isOpen = force ?? !isOpen;
-      toggleBtn.classList.toggle('active', isOpen);
-      btnContainer.classList.toggle('show', isOpen);
-    };
-
-    toggleBtn.onclick = () => toggle();
-    document.onclick = (e) => {
-      if (!container.contains(e.target) && isOpen) toggle(false);
-    };
-
-    container.append(btnContainer, toggleBtn);
-    document.body.appendChild(container);
-  };
-
-  // Initialize
-  document.readyState === 'loading' 
-    ? document.addEventListener('DOMContentLoaded', createUI)
-    : createUI();
 })();
