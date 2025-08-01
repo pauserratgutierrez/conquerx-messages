@@ -1,3 +1,5 @@
+// Handles DOM manipulation and user interactions
+
 (async () => {
   if (!location.pathname.startsWith('/es/schedules/set/update/')) return;
 
@@ -38,8 +40,16 @@
     const btn = e.target.closest('.toolbox-button');
     const template = btn?.dataset.template;
     if (template && mensajes?.[template]) {
-      await navigator.clipboard.writeText(mensajes[template]());
-      content.classList.add('hidden'); // Optionally hide toolbox after copying
+      const message = mensajes[template]();
+      const telefono = getDataValue('Teléfono');
+
+      await navigator.clipboard.writeText(message);
+      // if (telefono) {
+      //   const url = `https://web.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(message)}`;
+      //   await chrome.runtime.sendMessage({ action: 'whatsapp_tab', url });
+      // };
+
+      content.classList.add('hidden'); // Hide toolbox after copying
     }
   });
 
@@ -140,19 +150,20 @@
   // Cached data
   const getData = memoize(() => {
     const nombre = getDataValue('Nombre');
-    const lead = getDataValue('Nombre').charAt(0).toUpperCase() + getDataValue('Nombre').slice(1);
+    const lead = nombre.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     const correoCloser = getDataValue('Closer').toLowerCase();
     const fechaTexto = getDataValue('Fecha de llamada');
     const evento = getDataValue('Evento');
 
     const closer = CLOSERS[correoCloser];
+    const telefono = getDataValue('Teléfono');
     const fecha = formatDate(fechaTexto);
     const dominio = Object.entries(DOMINIOS).find(([key]) => 
       new RegExp(key, 'i').test(evento)
     )?.[1] ?? 'conquerx.com';
     const dominioKey = Object.keys(DOMINIOS).find(key => DOMINIOS[key] === dominio) ?? 'blocks';
 
-    return { nombre, lead, closer, fecha, fechaTexto, dominio, dominioKey };
+    return { nombre, lead, closer, telefono, fecha, fechaTexto, dominio, dominioKey };
   });
 
   // Message templates

@@ -5,6 +5,9 @@
   "description": "A set of tools to help setters in ConquerX CRM.",
   "author": "Pau Serrat Gutiérrez",
   "homepage_url": "https://github.com/pauserratgutierrez/conquerx-messages",
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "content_scripts": [
     {
       "matches": ["*://crm.conquerx.com/*"],
@@ -17,5 +20,5 @@
     "resources": ["src/widget.html"],
     "matches": ["*://crm.conquerx.com/*"]
   }],
-  "permissions": ["activeTab"]
+  "permissions": ["activeTab", "tabs"]
 }
