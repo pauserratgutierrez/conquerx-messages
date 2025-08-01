@@ -79,7 +79,8 @@
         ['Hugo', '+34 604 56 04 42', 'hugo.meseguer'],
         ['Lucia', '+34 604 56 04 43', 'lucia.serrano'],
         ['Mario', '+34 604 56 06 32', 'mario.garcia'],
-        ['Adrián', '+34 604 56 04 49', 'adrian.ondarra']
+        ['Adrián', '+34 604 56 04 49', 'adrian.ondarra'],
+        ['Oliver', '+34 604 56 06 30', 'oliver.sanchez']
       ]
     }).flatMap(([domain, list]) => 
       list.map(([name, phone, id]) => [`${id}@${domain}`, { name, phone }])
@@ -139,8 +140,6 @@
   // Cached data
   const getData = memoize(() => {
     const nombre = getDataValue('Nombre');
-    const correoLead = getDataValue('Correo electrónico');
-    const telefonoLead = getDataValue('Teléfono');
     const lead = getDataValue('Nombre').charAt(0).toUpperCase() + getDataValue('Nombre').slice(1);
     const correoCloser = getDataValue('Closer').toLowerCase();
     const fechaTexto = getDataValue('Fecha de llamada');
@@ -153,7 +152,7 @@
     )?.[1] ?? 'conquerx.com';
     const dominioKey = Object.keys(DOMINIOS).find(key => DOMINIOS[key] === dominio) ?? 'blocks';
 
-    return { nombre, correoLead, telefonoLead, lead, closer, fecha, fechaTexto, dominio, dominioKey };
+    return { nombre, lead, closer, fecha, fechaTexto, dominio, dominioKey };
   });
 
   // Message templates
@@ -183,8 +182,8 @@
       return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para el *${fecha}*.`;
     },
     'confirm_closer': () => {
-      const { fechaTexto, nombre, correoLead, telefonoLead } = getData();
-      return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nNombre\n${nombre}\nCorreo electrónico\n${correoLead}\nTeléfono\n${telefonoLead}`;
+      const { fechaTexto, nombre } = getData();
+      return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nNombre\n${nombre}`;
     },
     'cancel_latam': () => {
       const { lead, dominio, dominioKey } = getData();
