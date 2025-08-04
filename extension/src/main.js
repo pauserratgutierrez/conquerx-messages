@@ -90,7 +90,8 @@
         ['Lucia', '+34 604 56 04 43', 'lucia.serrano'],
         ['Mario', '+34 604 56 06 32', 'mario.garcia'],
         ['Adrián', '+34 604 56 04 49', 'adrian.ondarra'],
-        ['Oliver', '+34 604 56 06 30', 'oliver.sanchez']
+        ['Oliver', '+34 604 56 06 30', 'oliver.sanchez'],
+        ['Manuel Hunger', '+34 604 56 16 46', 'manuel.hunger']
       ]
     }).flatMap(([domain, list]) => 
       list.map(([name, phone, id]) => [`${id}@${domain}`, { name, phone }])
