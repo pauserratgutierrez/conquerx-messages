@@ -160,12 +160,13 @@
     const telefono = getDataValue('Teléfono');
     const fecha = formatDate(fechaTexto);
     const fechaLead = getDataValue('[BETA] Fecha de llamada para el lead');
+    const zonaHoraria = getDataValue('Zona Horaria');
     const dominio = Object.entries(DOMINIOS).find(([key]) => 
       new RegExp(key, 'i').test(evento)
     )?.[1] ?? 'conquerx.com';
     const dominioKey = Object.keys(DOMINIOS).find(key => DOMINIOS[key] === dominio) ?? 'blocks';
 
-    return { nombre, lead, closer, telefono, fecha, fechaLead, fechaTexto, dominio, dominioKey };
+    return { nombre, lead, closer, telefono, fecha, fechaLead, zonaHoraria,fechaTexto, dominio, dominioKey };
   });
 
   // Message templates
@@ -195,8 +196,8 @@
       return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para el *${fecha}*.`;
     },
     'confirm_closer': () => {
-      const { fechaTexto, nombre, fechaLead } = getData();
-      return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nFecha de llamada Lead\n${fechaLead}\nNombre\n${nombre}`;
+      const { fechaTexto, fechaLead, zonaHoraria, nombre } = getData();
+      return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nFecha de llamada para el lead\n${fechaLead}\nZona Horaria\n${zonaHoraria}\nNombre\n${nombre}`;
     },
     'cancel_latam': () => {
       const { lead, dominio, dominioKey } = getData();
