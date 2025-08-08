@@ -91,7 +91,7 @@
         ['Mario', '+34 604 56 06 32', 'mario.garcia'],
         ['Adrián', '+34 604 56 04 49', 'adrian.ondarra'],
         ['Oliver', '+34 604 56 06 30', 'oliver.sanchez'],
-        ['Manuel Hunger', '+34 604 56 16 46', 'manuel.hunger']
+        ['Manuel Hunger', '+34 604 56 16 46', 'manuel.hunger']
       ]
     }).flatMap(([domain, list]) => 
       list.map(([name, phone, id]) => [`${id}@${domain}`, { name, phone }])
@@ -138,11 +138,25 @@
     try {
       const map = Object.fromEntries(
         new Intl.DateTimeFormat('es-ES', {
-          weekday: 'long', day: 'numeric', month: 'long',
-          hour: '2-digit', minute: '2-digit', timeZone: 'UTC', hour12: false
+          weekday: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC',
+          hour12: false
         }).formatToParts(date).map(({ type, value }) => [type, value])
       );
-      return `${map.weekday} ${map.day} de ${map.month} a las ${map.hour}:${map.minute}h de Madrid`;
+
+      const now = new Date();
+      const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      const tomorrowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+      const targetUTC = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+
+      let suffix = '';
+      if (targetUTC.getTime() === todayUTC.getTime()) suffix = ' (hoy)';
+      else if (targetUTC.getTime() === tomorrowUTC.getTime()) suffix = ' (mañana)';
+
+      return `${map.weekday} ${map.day}${suffix} a las ${map.hour}:${map.minute}h de Madrid`;
     } catch {
       return text;
     }
