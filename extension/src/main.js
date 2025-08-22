@@ -91,7 +91,8 @@
         ['Mario', '+34 604 56 06 32', 'mario.garcia'],
         ['Adrián', '+34 604 56 04 49', 'adrian.ondarra'],
         ['Oliver', '+34 604 56 06 30', 'oliver.sanchez'],
-        ['Manuel Hunger', '+34 604 56 16 46', 'manuel.hunger']
+        ['Manuel', '+34 604 56 16 46', 'manuel.hunger'],
+        ['Damian', '+34 604 56 02 99', 'damian.lefosse']
       ]
     }).flatMap(([domain, list]) => 
       list.map(([name, phone, id]) => [`${id}@${domain}`, { name, phone }])
@@ -106,7 +107,7 @@
 
   const SETTER = {
     name: 'Dani',
-    phoneNumber: '+34 604 56 06 29',
+    phoneNumber: '+34 611 37 27 74',
   };
 
   // Memoized data extraction
@@ -134,32 +135,27 @@
 
     const [d, m, y, h, min] = parts.map(Number);
     const date = new Date(Date.UTC(y, m - 1, d, h, min));
-    
-    try {
-      const map = Object.fromEntries(
-        new Intl.DateTimeFormat('es-ES', {
-          weekday: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'UTC',
-          hour12: false
-        }).formatToParts(date).map(({ type, value }) => [type, value])
-      );
 
-      const now = new Date();
-      const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-      const tomorrowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-      const targetUTC = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    const map = Object.fromEntries(
+      new Intl.DateTimeFormat('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        hour12: false
+      }).formatToParts(date).map(({ type, value }) => [type, value])
+    );
 
-      let suffix = '';
-      if (targetUTC.getTime() === todayUTC.getTime()) suffix = ' (hoy)';
-      else if (targetUTC.getTime() === tomorrowUTC.getTime()) suffix = ' (mañana)';
+    const now = new Date();
+    const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const tomorrowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    const targetUTC = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
 
-      return `${map.weekday} ${map.day}${suffix} a las ${map.hour}:${map.minute}h de Madrid`;
-    } catch {
-      return text;
-    }
+    // Date format could be: "el 5 de diciembre a las 14:30h de Madrid", "hoy/mañana a las 14:30h de Madrid"
+    if (targetUTC.getTime() === todayUTC.getTime()) return `hoy a las ${map.hour}:${map.minute}h de Madrid`;
+    else if (targetUTC.getTime() === tomorrowUTC.getTime()) return `mañana a las ${map.hour}:${map.minute}h de Madrid`;
+    else return `el ${map.weekday} ${map.day} a las ${map.hour}:${map.minute}h de Madrid`;
   };
 
   // Cached data
@@ -185,6 +181,9 @@
 
   // Message templates
   const mensajes = {
+    'closer_name': () => getData().closer.name,
+    'closer_phone': () => getData().closer.phone,
+    'call_date': () => getData().fecha,
     'ncl1': () => {
       const { lead, dominio } = getData();
       return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para confirmar tu cita antes de la sesión. Si no puedo confirmarla por teléfono, tendré que cancelarla.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
@@ -207,7 +206,7 @@
     'ncp2': () => `Hola ${getData().lead} 😊\n\nTe he llamado de nuevo porque iniciaste el proceso para agendar una llamada con nosotros, pero faltó el último paso para elegir la hora.\n\nTe llamaba simplemente para ayudarte a cuadrar tu cita. Avísame cuando estés disponible y te vuelvo a llamar.👌`,
     'confirm_lead': () => {
       const { lead, dominio, closer, fecha } = getData();
-      return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para el *${fecha}*.`;
+      return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para *${fecha}*.`;
     },
     'confirm_closer': () => {
       const { fechaTexto, fechaLead, zonaHoraria, nombre } = getData();
