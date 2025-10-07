@@ -19,7 +19,7 @@
     'maria.jose@conquerblocks.com': { name: 'María José', phone: '+34 604 56 04 39' },
     'nazaret.dinino@conquerblocks.com': { name: 'Nazaret', phone: '+34 604 56 06 31' },
     'santos.galindo@conquerblocks.com': { name: 'Santos', phone: '+34 604 56 04 36' },
-    'daniel.cassineri@conquerblocks.com': { name: 'Daniel', phone: '+54 9 11 2460-5185' },
+    'daniel.cassineri@conquerblocks.com': { name: 'Luca', phone: '+34 604 56 04 41' },
     'natalia.montoya@conquerblocks.com': { name: 'Natalia', phone: '+34 634 33 49 34' },
     'javier.iglesias@conquerblocks.com': { name: 'Javier', phone: '+34 628 64 90 42' },
 
