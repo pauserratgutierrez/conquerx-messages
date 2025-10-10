@@ -19,7 +19,7 @@
     'maria.jose@conquerblocks.com': { name: 'María José', phone: '+34 604 56 04 39' },
     'nazaret.dinino@conquerblocks.com': { name: 'Nazaret', phone: '+34 604 56 06 31' },
     'santos.galindo@conquerblocks.com': { name: 'Santos', phone: '+34 604 56 04 36' },
-    'daniel.cassineri@conquerblocks.com': { name: 'Luca', phone: '+34 604 56 04 41' },
+    'daniel.cassineri@conquerblocks.com': { name: 'Luca', phone: '+34 602 33 52 26' },
     'natalia.montoya@conquerblocks.com': { name: 'Natalia', phone: '+34 634 33 49 34' },
     'javier.iglesias@conquerblocks.com': { name: 'Javier', phone: '+34 628 64 90 42' },
 
@@ -42,7 +42,9 @@
     'adrian.ondarra@conquerlanguages.com': { name: 'Adrián', phone: '+34 604 56 04 49' },
     'oliver.sanchez@conquerlanguages.com': { name: 'Oliver', phone: '+34 604 56 06 30' },
     'manuel.hunger@conquerlanguages.com': { name: 'Manuel', phone: '+34 604 56 16 46' },
-    'damian.lefosse@conquerlanguages.com': { name: 'Damián', phone: '+34 604 56 02 99' }
+    'damian.lefosse@conquerlanguages.com': { name: 'Damián', phone: '+34 604 56 02 99' },
+    'antia.murillo@conquerlanguages.com': { name: 'Antia', phone: '+34 644 94 76 49' },
+    'john.quintero@conquerlanguages.com': { name: 'John', phone: '+34 642 66 07 16' }
   };
 
   const LATAM_LINKS = {
