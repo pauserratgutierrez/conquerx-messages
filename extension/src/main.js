@@ -1,14 +1,15 @@
-// Handles DOM manipulation and user interactions (optimized)
+// Handles DOM manipulation and user interactions
 
 (() => {
-  // Fast path check
-  if (!location.pathname.startsWith('/es/schedules/set/update/')) return;
+  if (!location.pathname.startsWith('/es/schedules/set/update/') && !location.pathname.startsWith('/es/schedules/set/preschedule/detail/')) return;
+
   // Prevent double injection (SPA navigations)
   if (document.querySelector('.toolbox-container')) return;
 
-  // Static maps (built once)
+  const SETTER = { name: 'Dani', phoneNumber: '+34 611 37 27 74' };
   const DOMINIOS = { blocks: 'ConquerBlocks.com', finance: 'ConquerFinance.com', languages: 'ConquerLanguages.com' };
   const CLOSERS = {
+    // Blocks
     'alejandro.hortelano@conquerblocks.com': { name: 'Alejandro', phone: '+34 604 56 04 46' },
     'alexandro.vatca@conquerblocks.com': { name: 'Alex', phone: '+34 604 56 04 45' },
     'beatrice@conquerblocks.com': { name: 'Beatrice', phone: '+34 604 56 04 52' },
@@ -19,10 +20,14 @@
     'maria.jose@conquerblocks.com': { name: 'María José', phone: '+34 604 56 04 39' },
     'nazaret.dinino@conquerblocks.com': { name: 'Nazaret', phone: '+34 604 56 06 31' },
     'santos.galindo@conquerblocks.com': { name: 'Santos', phone: '+34 604 56 04 36' },
-    'daniel.cassineri@conquerblocks.com': { name: 'Luca', phone: '+34 602 33 52 26' },
+    'daniel.cassineri@conquerblocks.com': { name: 'Luca Daniel', phone: '+34 602 33 52 26' },
     'natalia.montoya@conquerblocks.com': { name: 'Natalia', phone: '+34 634 33 49 34' },
     'javier.iglesias@conquerblocks.com': { name: 'Javier', phone: '+34 628 64 90 42' },
+    'carla.miraglio@conquerblocks.com': { name: 'Carla', phone: '+34 642 50 94 07' },
+    'florencia.scarano@conquerblocks.com': { name: 'Florencia', phone: '+34 641 56 62 23' },
+    'albert.navarro@conquerblocks.com': { name: 'Albert', phone: '+34 631 16 47 02' },
 
+    // Finance
     'chema.celada@conquerfinance.com': { name: 'Chema', phone: '+34 604 56 04 40' },
     'corina.pineiro@conquerfinance.com': { name: 'Corina', phone: '+34 604 56 10 08' },
     'llibert.gutierrez@conquerfinance.com': { name: 'Llibert', phone: '+34 604 56 04 35' },
@@ -34,6 +39,7 @@
     'llibert.gutierrez@formacioneninversion.com': { name: 'Llibert', phone: '+34 604 56 04 35' },
     'raul.barrios@formacioneninversion.com': { name: 'Raúl', phone: '+34 604 56 03 01' },
 
+    // Languages
     'daniel.rodriguez@conquerlanguages.com': { name: 'Daniel', phone: '+34 604 56 12 18' },
     'hugo.bernabeu@conquerlanguages.com': { name: 'Hugo', phone: '+34 604 56 04 51' },
     'hugo.meseguer@conquerlanguages.com': { name: 'Hugo', phone: '+34 604 56 04 42' },
@@ -43,17 +49,11 @@
     'oliver.sanchez@conquerlanguages.com': { name: 'Oliver', phone: '+34 604 56 06 30' },
     'manuel.hunger@conquerlanguages.com': { name: 'Manuel', phone: '+34 604 56 16 46' },
     'damian.lefosse@conquerlanguages.com': { name: 'Damián', phone: '+34 604 56 02 99' },
-    'antia.murillo@conquerlanguages.com': { name: 'Antia', phone: '+34 644 94 76 49' },
-    'john.quintero@conquerlanguages.com': { name: 'John', phone: '+34 642 66 07 16' }
+    'antia.murillo@conquerlanguages.com': { name: 'Antía', phone: '+34 644 94 76 49' },
+    'john.quintero@conquerlanguages.com': { name: 'John', phone: '+34 642 66 07 16' },
+    'eduardo.salgado@conquerlanguages.com': { name: 'Eduardo', phone: '+34 604 56 35 78' },
+    'alexandro.david@conquerlanguages.com': { name: 'Alex', phone: '+34 604 56 04 45' }
   };
-
-  const LATAM_LINKS = {
-    blocks: 'https://www.conquerblocks.com/agenda/fullstack/latam',
-    finance: 'https://calendly.com/d/3p4-8yy-cdm/sesion-de-consultoria-conquer-finance-latam',
-    languages: 'https://calendly.com/d/cqpw-xd6-x4b/sesion-de-consultoria-conquer-languages-latam'
-  };
-
-  const SETTER = { name: 'Dani', phoneNumber: '+34 611 37 27 74' };
 
   let textCache, dataCache;
   const invalidateCaches = () => { textCache = undefined; dataCache = undefined; };
@@ -127,35 +127,35 @@
     call_date: () => computeData().fecha,
     ncl1: () => {
       const { lead, dominio } = computeData();
-      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para confirmar tu cita antes de la sesión. Si no puedo confirmarla por teléfono, tendré que cancelarla.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
+      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para *confirmar tu cita* antes de la sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
     },
     ncl1_latam: () => {
       const { lead, dominio } = computeData();
-      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero me aparece un número de Latinoamérica 😊\n\nEs esencial que podamos saber si te encuentras viviendo en Europa o en algún país de Latinoamérica para que podamos asignarte al departamento correspondiente.\n\nQuedo atento a tu respuesta. ¡Muchas gracias!`;
+      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero me aparece un número de Latinoamérica 😊\n\nEs esencial que podamos saber si te encuentras viviendo en Europa o en algún país de Latinoamérica para que podamos asignarte al departamento correspondiente.\n\nQuedo atento a tu respuesta. ¡Muchas gracias!`;
     },
     ncl2: () => {
       const { lead, fecha } = computeData();
-      return `Hola ${lead},\n\nTe he llamado varias veces y no logro contactar contigo. Te llamaba simplemente para comentarte cómo va a ser la llamada del *${fecha}*. Avísame cuando estés disponible y te vuelvo a llamar.`;
+      return `Hola ${lead},\n\nTe he llamado varias veces y no logro contactar contigo. Te llamaba simplemente para comentarte cómo va a ser la llamada *${fecha}*. Avísame cuando estés disponible y te vuelvo a llamar.`;
     },
     ncl3: () => `${computeData().lead}, he vuelto a intentar contactarte en varias ocasiones para confirmar tu llamada, pero veo que no hemos podido coincidir, ¿Podrías decirme cuándo podríamos cuadrar para confirmar la llamada?`,
     ncl4: () => `${computeData().lead}, si finalmente ya no quieres tener la llamada, con un "eres muy simpático ${SETTER.name}, pero ya no me interesa" también me haces feliz 😊`,
-    ncl5: () => `${computeData().lead}, entiendo que puedas estar ocupado. Es importante confirmar tu sesión ya que hay otras personas interesadas. ¿Me confirmas que podrás asistir?`,
+    ncl5: () => `${computeData().lead}, entiendo que puedas estar ocupado, es importante confirmar tu sesión ya que hay otras personas interesadas. ¿Me confirmas que podrás asistir?`,
+    nsl1: () => {
+      const { lead, dominio, closer, fecha } = computeData();
+      return `¡Hola ${lead}! 👋 Soy ${SETTER.name} del equipo de ${dominio}\n\nTe acabo de llamar porque vimos que no pudiste conectarte a la sesión que tenías con ${closer?.name || 'nuestro equipo'}, ${fecha} y quería saber si tuviste algún problema para conectarte.\n\nTe volveré a llamar para que tengamos una breve llamada y así reagendar tu cita. Te viene bien que te llame hoy o prefieres mañana? 👌`;
+    },
     ncp1: () => {
       const { lead, dominio } = computeData();
-      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}.\n\nTe acabo de llamar para agendar la cita que quedó pendiente con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para poder agendar tu sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente.👌`;
+      return `¡Hola ${lead}! 👋\n\nSoy ${SETTER.name} del equipo de ${dominio}\n\nTe acabo de llamar para agendar la cita que quedó pendiente con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para poder agendar tu sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}`;
     },
-    ncp2: () => `Hola ${computeData().lead} 😊\n\nTe he llamado de nuevo porque iniciaste el proceso para agendar una llamada con nosotros, pero faltó el último paso para elegir la hora.\n\nTe llamaba simplemente para ayudarte a cuadrar tu cita. Avísame cuando estés disponible y te vuelvo a llamar.👌`,
+    ncp2: () => `Hola ${computeData().lead} 😊\n\nTe he llamado de nuevo porque iniciaste el proceso para agendar una llamada con nosotros, pero faltó el último paso para elegir la hora.\n\nTe llamaba simplemente para ayudarte a cuadrar tu cita. Avísame cuando estés disponible y te vuelvo a llamar. 👌`,
     confirm_lead: () => {
       const { lead, dominio, closer, fecha } = computeData();
-      return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}. Justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el enlace de Google Meet desde el siguiente número: ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para *${fecha}*.`;
+      return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio}, justo estamos hablando ahora mismo por teléfono 😊\n\nMuy pronto te va a contactar ${closer?.name || 'nuestro equipo'} para enviarte el link de Google Meet, con el siguiente número ${closer?.phone || 'que te proporcionaremos'}\n\n✅ Tu cita está confirmada para *${fecha}*`;
     },
     confirm_closer: () => {
       const { fechaTexto, fechaLead, zonaHoraria, nombre } = computeData();
       return `Confirmada\n\nFecha de llamada\n${fechaTexto}\nFecha de llamada para el lead\n${fechaLead}\nZona Horaria\n${zonaHoraria}\nNombre\n${nombre}`;
-    },
-    cancel_latam: () => {
-      const { lead, dominio, dominioKey } = computeData();
-      return `¡Hola ${lead}!\n\nSoy ${SETTER.name} del equipo de ${dominio} 😊\n\nTe dejo el enlace para poder agendar tu cita con el equipo de Latam. Te será más sencillo cuadrar horarios 💪\n\n${LATAM_LINKS[dominioKey]}`;
     }
   };
 
