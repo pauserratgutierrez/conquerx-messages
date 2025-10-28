@@ -6,7 +6,7 @@
   // Prevent double injection (SPA navigations)
   if (document.querySelector('.toolbox-container')) return;
 
-  const SETTER = { name: 'Dani', phoneNumber: '+34 611 37 27 74' };
+  const SETTER = { name: 'Dani', phone: '+34 611 37 27 74' };
   const CLOSERS = {
     // Blocks
     'alejandro.hortelano@conquerblocks.com': { name: 'Alejandro', phone: '+34 604 56 04 46' },
@@ -165,9 +165,10 @@
       closer_name: () => ({ action: 'copy', content: DATA.closer.name }),
       closer_phone: () => ({ action: 'copy', content: DATA.closer.phone }),
       event_date: () => ({ action: 'copy', content: DATA.event.dateOriginalFormatted }),
+      setter_respond_phone: () => ({ action: 'copy', content: SETTER.phone }),
 
       no_contesta_llamada_1: () => {
-        const text = `¡Hola ${DATA.lead.nameForLead}! 👋\n\nSoy ${SETTER.name} del equipo de ${DATA.domain}\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para *confirmar tu cita* antes de la sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
+        const text = `¡Hola ${DATA.lead.nameForLead}! 👋\n\nSoy ${SETTER.name} del equipo de ${DATA.domain}\n\nTe acabo de llamar para confirmar la cita que has agendado con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para *confirmar tu cita* antes de la sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phone}\n\nPor favor, guarda mi número en tus contactos para identificarme fácilmente. 👌`;
         return { action: 'copy', content: text };
       },
       no_contesta_llamada_1_latam: () => {
@@ -197,7 +198,7 @@
       },
 
       no_contesta_prellamada_1: () => {
-        const text = `¡Hola ${DATA.lead.nameForLead}! 👋\n\nSoy ${SETTER.name} del equipo de ${DATA.domain}\n\nTe acabo de llamar para agendar la cita que quedó pendiente con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para poder agendar tu sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phoneNumber}`;
+        const text = `¡Hola ${DATA.lead.nameForLead}! 👋\n\nSoy ${SETTER.name} del equipo de ${DATA.domain}\n\nTe acabo de llamar para agendar la cita que quedó pendiente con nosotros, pero parece que no fue un buen momento para ti ☺️\n\nEs esencial que tengamos una breve llamada para poder agendar tu sesión.\n\nTe volveré a llamar desde este número: ${SETTER.phone}`;
         return { action: 'copy', content: text };
       },
       no_contesta_prellamada_2: () => {
